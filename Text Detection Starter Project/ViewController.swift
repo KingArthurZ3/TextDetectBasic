@@ -2,7 +2,7 @@
 //  ViewController.swift
 //  Text Detection Starter Project
 //
-//  Created by Sai Kambampati on 6/21/17.
+//  Created by Arthur Zhang on 7/30/17.
 //  Copyright © 2017 AppCoda. All rights reserved.
 //
 
@@ -18,11 +18,13 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        startLiveVideo()
+        startTextDetection()
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        startLiveVideo()
-        startTextDetection()
+        
     }
     
     override func didReceiveMemoryWarning() {
@@ -75,7 +77,7 @@ class ViewController: UIViewController {
                 
                 self.highlightWord(box: rg)
                 
-                if let boxes = region?.characterBoxes{
+                if let boxes = region?.characterBoxes {
                     for characterBox in boxes {
                         self.highlightLetters(box: characterBox)
                     }
@@ -110,15 +112,15 @@ class ViewController: UIViewController {
         }
         
         let xCord = maxX * imageView.frame.size.width
-        let yCord = maxY * imageView.frame.size.height
+        let yCord = (1 - minY) * imageView.frame.size.height
         let width = (minX - maxX) * imageView.frame.size.width
         let height = (minY - maxY) * imageView.frame.size.height
         
         let outline = CALayer()
         outline.frame = CGRect(x: xCord, y: yCord, width: width, height: height)
-        outline.borderWidth = 1.0
-        outline.borderColor = UIColor.blue.cgColor
-        
+        outline.borderWidth = 2.0
+        outline.borderColor = UIColor.red.cgColor
+        //change to red if needed
         imageView.layer.addSublayer(outline)
         
     }
@@ -139,7 +141,7 @@ class ViewController: UIViewController {
 }
 
 extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
-    func captureOutput(_ output: AVCaptureOutput, didDrop sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else{
             return
         }
